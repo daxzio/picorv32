@@ -1,29 +1,30 @@
 module dut #(
-    integer ENABLE_COUNTERS      = 1,
-    integer ENABLE_COUNTERS64    = 1,
-    integer ENABLE_REGS_16_31    = 1,
-    integer ENABLE_REGS_DUALPORT = 1,
-    integer TWO_STAGE_SHIFT      = 1,
-    integer BARREL_SHIFTER       = 0,
-    integer TWO_CYCLE_COMPARE    = 0,
-    integer TWO_CYCLE_ALU        = 0,
-    integer COMPRESSED_ISA       = 0,
-    integer CATCH_MISALIGN       = 1,
-    integer CATCH_ILLINSN        = 1,
-    integer ENABLE_PCPI          = 0,
-    integer ENABLE_MUL           = 0,
-    integer ENABLE_FAST_MUL      = 0,
-    integer ENABLE_DIV           = 0,
-    integer ENABLE_IRQ           = 0,
-    integer ENABLE_IRQ_QREGS     = 1,
-    integer ENABLE_IRQ_TIMER     = 1,
-    integer ENABLE_TRACE         = 0,
-    integer REGS_INIT_ZERO       = 0,
-    integer MASKED_IRQ           = 32'h0000_0000,
-    integer LATCHED_IRQ          = 32'hffff_ffff,
-    integer PROGADDR_RESET       = 32'h0000_0000,
-    integer PROGADDR_IRQ         = 32'h0000_0010,
-    integer STACKADDR            = 32'hffff_ffff
+    integer ENABLE_COUNTERS      = 1
+    ,integer ENABLE_COUNTERS64    = 1
+    ,integer ENABLE_REGS_16_31    = 1
+    ,integer ENABLE_REGS_DUALPORT = 1
+    ,integer TWO_STAGE_SHIFT      = 1
+    ,integer BARREL_SHIFTER       = 0
+    ,integer TWO_CYCLE_COMPARE    = 0
+    ,integer TWO_CYCLE_ALU        = 0
+    ,integer COMPRESSED_ISA       = 0
+    ,integer CATCH_MISALIGN       = 1
+    ,integer CATCH_ILLINSN        = 1
+    ,integer ENABLE_PCPI          = 0
+    ,integer ENABLE_MUL           = 0
+    ,integer ENABLE_FAST_MUL      = 0
+    ,integer ENABLE_DIV           = 0
+    ,integer ENABLE_IRQ           = 0
+    ,integer ENABLE_IRQ_QREGS     = 1
+    ,integer ENABLE_IRQ_TIMER     = 1
+    ,integer ENABLE_TRACE         = 0
+    ,integer REGS_INIT_ZERO       = 0
+    ,integer MASKED_IRQ          = 32'h0000_0000
+    ,integer LATCHED_IRQ          = 32'hffff_ffff
+    ,integer PROGADDR_RESET       = 32'h0000_0000
+    ,integer PROGADDR_IRQ         = 32'h0000_0010
+    ,integer STACKADDR            = 32'hffff_ffff
+    ,parameter G_HEXFILE          = "./firmware.hex"
 ) (
     input  clk,
     input  resetn,
@@ -117,6 +118,24 @@ module dut #(
 );
 
 
+    logic        w_mem_axi_awvalid;
+    logic        w_mem_axi_awready;
+    logic [31:0] w_mem_axi_awaddr;
+    logic [ 2:0] w_mem_axi_awprot;
+    logic        w_mem_axi_wvalid;
+    logic        w_mem_axi_wready;
+    logic [31:0] w_mem_axi_wdata;
+    logic [ 3:0] w_mem_axi_wstrb;
+    logic        w_mem_axi_bvalid;
+    logic        w_mem_axi_bready;
+    logic        w_mem_axi_arvalid;
+    logic        w_mem_axi_arready;
+    logic [31:0] w_mem_axi_araddr;
+    logic [ 2:0] w_mem_axi_arprot;
+    logic        w_mem_axi_rvalid;
+    logic        w_mem_axi_rready;
+    logic [31:0] w_mem_axi_rdata;
+
     picorv32_axi #(
           .ENABLE_IRQ    (1)
         , .ENABLE_TRACE  (1)
@@ -143,24 +162,6 @@ module dut #(
         , .mem_axi_rready (w_mem_axi_rready)
         , .mem_axi_rdata  (w_mem_axi_rdata)
     );
-
-    logic        w_mem_axi_awvalid;
-    logic        w_mem_axi_awready;
-    logic [31:0] w_mem_axi_awaddr;
-    logic [ 2:0] w_mem_axi_awprot;
-    logic        w_mem_axi_wvalid;
-    logic        w_mem_axi_wready;
-    logic [31:0] w_mem_axi_wdata;
-    logic [ 3:0] w_mem_axi_wstrb;
-    logic        w_mem_axi_bvalid;
-    logic        w_mem_axi_bready;
-    logic        w_mem_axi_arvalid;
-    logic        w_mem_axi_arready;
-    logic [31:0] w_mem_axi_araddr;
-    logic [ 2:0] w_mem_axi_arprot;
-    logic        w_mem_axi_rvalid;
-    logic        w_mem_axi_rready;
-    logic [31:0] w_mem_axi_rdata;
 
     //     assign mem_axi_awvalid =  w_mem_axi_awvalid;
     //     assign mem_axi_awaddr =   w_mem_axi_awaddr;
@@ -190,7 +191,7 @@ module dut #(
 
     axi_memory #(
           .G_ID_WIDTH (1)
-        , .G_INIT_FILE("/mnt/sda/projects/picorv32/cocotb/firmware.hex")
+        , .G_INIT_FILE(G_HEXFILE)
     ) i_axi_memory (
           .s_aclk        (clk)
         , .s_aresetn     (resetn)

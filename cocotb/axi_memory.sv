@@ -79,16 +79,19 @@ module axi_memory #(
     logic [                                       3:0] a_axi_awcache  [G_SLAVE_AXI-1:0];
     logic [                                       2:0] a_axi_awprot   [G_SLAVE_AXI-1:0];
     logic [                                       3:0] a_axi_awregion [G_SLAVE_AXI-1:0];
+    logic [                        G_AWUSER_WIDTH-1:0] a_axi_awuser   [G_SLAVE_AXI-1:0];
     logic [                                       3:0] a_axi_awqos    [G_SLAVE_AXI-1:0];
     logic                                              a_axi_awvalid  [G_SLAVE_AXI-1:0];
     logic                                              a_axi_awready  [G_SLAVE_AXI-1:0];
     logic [                                      31:0] a_axi_wdata    [G_SLAVE_AXI-1:0];
     logic [                                       3:0] a_axi_wstrb    [G_SLAVE_AXI-1:0];
     logic                                              a_axi_wlast    [G_SLAVE_AXI-1:0];
+    logic [                         G_WUSER_WIDTH-1:0] a_axi_wuser    [G_SLAVE_AXI-1:0];
     logic                                              a_axi_wvalid   [G_SLAVE_AXI-1:0];
     logic                                              a_axi_wready   [G_SLAVE_AXI-1:0];
     logic [                          G_S_ID_WIDTH-1:0] a_axi_bid      [G_SLAVE_AXI-1:0];
     logic [                                       1:0] a_axi_bresp    [G_SLAVE_AXI-1:0];
+    logic [                         G_BUSER_WIDTH-1:0] a_axi_buser    [G_SLAVE_AXI-1:0];
     logic                                              a_axi_bvalid   [G_SLAVE_AXI-1:0];
     logic                                              a_axi_bready   [G_SLAVE_AXI-1:0];
     logic [                          G_S_ID_WIDTH-1:0] a_axi_arid     [G_SLAVE_AXI-1:0];
@@ -100,6 +103,7 @@ module axi_memory #(
     logic [                                       3:0] a_axi_arcache  [G_SLAVE_AXI-1:0];
     logic [                                       2:0] a_axi_arprot   [G_SLAVE_AXI-1:0];
     logic [                                       3:0] a_axi_arregion [G_SLAVE_AXI-1:0];
+    logic [                        G_ARUSER_WIDTH-1:0] a_axi_aruser   [G_SLAVE_AXI-1:0];
     logic [                                       3:0] a_axi_arqos    [G_SLAVE_AXI-1:0];
     logic                                              a_axi_arvalid  [G_SLAVE_AXI-1:0];
     logic                                              a_axi_arready  [G_SLAVE_AXI-1:0];
@@ -107,6 +111,7 @@ module axi_memory #(
     logic [                                      31:0] a_axi_rdata    [G_SLAVE_AXI-1:0];
     logic [                                       1:0] a_axi_rresp    [G_SLAVE_AXI-1:0];
     logic                                              a_axi_rlast    [G_SLAVE_AXI-1:0];
+    logic [                        G_RUSER_WIDTH-1:0]  a_axi_ruser    [G_SLAVE_AXI-1:0];
     logic                                              a_axi_rvalid   [G_SLAVE_AXI-1:0];
     logic                                              a_axi_rready   [G_SLAVE_AXI-1:0];
 
@@ -119,16 +124,19 @@ module axi_memory #(
     logic [ ($bits(a_axi_awcache[0])*G_SLAVE_AXI)-1:0] y_axi_awcache;
     logic [  ($bits(a_axi_awprot[0])*G_SLAVE_AXI)-1:0] y_axi_awprot;
     logic [($bits(a_axi_awregion[0])*G_SLAVE_AXI)-1:0] y_axi_awregion;
+    logic [  ($bits(a_axi_awuser[0])*G_SLAVE_AXI)-1:0] y_axi_awuser;
     logic [   ($bits(a_axi_awqos[0])*G_SLAVE_AXI)-1:0] y_axi_awqos;
     logic [ ($bits(a_axi_awvalid[0])*G_SLAVE_AXI)-1:0] y_axi_awvalid;
     logic [ ($bits(a_axi_awready[0])*G_SLAVE_AXI)-1:0] y_axi_awready;
     logic [   ($bits(a_axi_wdata[0])*G_SLAVE_AXI)-1:0] y_axi_wdata;
     logic [   ($bits(a_axi_wstrb[0])*G_SLAVE_AXI)-1:0] y_axi_wstrb;
     logic [   ($bits(a_axi_wlast[0])*G_SLAVE_AXI)-1:0] y_axi_wlast;
+    logic [   ($bits(a_axi_wuser[0])*G_SLAVE_AXI)-1:0] y_axi_wuser;
     logic [  ($bits(a_axi_wvalid[0])*G_SLAVE_AXI)-1:0] y_axi_wvalid;
     logic [  ($bits(a_axi_wready[0])*G_SLAVE_AXI)-1:0] y_axi_wready;
     logic [     ($bits(a_axi_bid[0])*G_SLAVE_AXI)-1:0] y_axi_bid;
     logic [   ($bits(a_axi_bresp[0])*G_SLAVE_AXI)-1:0] y_axi_bresp;
+    logic [   ($bits(a_axi_buser[0])*G_SLAVE_AXI)-1:0] y_axi_buser;
     logic [  ($bits(a_axi_bvalid[0])*G_SLAVE_AXI)-1:0] y_axi_bvalid;
     logic [  ($bits(a_axi_bready[0])*G_SLAVE_AXI)-1:0] y_axi_bready;
     logic [    ($bits(a_axi_arid[0])*G_SLAVE_AXI)-1:0] y_axi_arid;
@@ -140,12 +148,14 @@ module axi_memory #(
     logic [ ($bits(a_axi_arcache[0])*G_SLAVE_AXI)-1:0] y_axi_arcache;
     logic [  ($bits(a_axi_arprot[0])*G_SLAVE_AXI)-1:0] y_axi_arprot;
     logic [($bits(a_axi_arregion[0])*G_SLAVE_AXI)-1:0] y_axi_arregion;
+    logic [  ($bits(a_axi_aruser[0])*G_SLAVE_AXI)-1:0] y_axi_aruser;
     logic [   ($bits(a_axi_arqos[0])*G_SLAVE_AXI)-1:0] y_axi_arqos;
     logic [ ($bits(a_axi_arvalid[0])*G_SLAVE_AXI)-1:0] y_axi_arvalid;
     logic [ ($bits(a_axi_arready[0])*G_SLAVE_AXI)-1:0] y_axi_arready;
     logic [     ($bits(a_axi_rid[0])*G_SLAVE_AXI)-1:0] y_axi_rid;
     logic [   ($bits(a_axi_rdata[0])*G_SLAVE_AXI)-1:0] y_axi_rdata;
     logic [   ($bits(a_axi_rresp[0])*G_SLAVE_AXI)-1:0] y_axi_rresp;
+    logic [   ($bits(a_axi_ruser[0])*G_SLAVE_AXI)-1:0] y_axi_ruser;
     logic [   ($bits(a_axi_rlast[0])*G_SLAVE_AXI)-1:0] y_axi_rlast;
     logic [  ($bits(a_axi_rvalid[0])*G_SLAVE_AXI)-1:0] y_axi_rvalid;
     logic [  ($bits(a_axi_rready[0])*G_SLAVE_AXI)-1:0] y_axi_rready;
@@ -161,16 +171,19 @@ module axi_memory #(
             assign y_axi_awcache[($bits(a_axi_awcache[0])*i)+:($bits(a_axi_awcache[0]))] = a_axi_awcache[i];
             assign y_axi_awprot[($bits(a_axi_awprot[0])*i)+:($bits(a_axi_awprot[0]))] = a_axi_awprot[i];
             assign y_axi_awregion[($bits(a_axi_awregion[0])*i)+:($bits(a_axi_awregion[0]))] = a_axi_awregion[i];
+            assign y_axi_awuser[($bits(a_axi_awuser[0])*i)+:($bits(a_axi_awuser[0]))] = a_axi_awuser[i];
             assign y_axi_awqos[($bits(a_axi_awqos[0])*i)+:($bits(a_axi_awqos[0]))] = a_axi_awqos[i];
             assign y_axi_awvalid[($bits(a_axi_awvalid[0])*i)+:($bits(a_axi_awvalid[0]))] = a_axi_awvalid[i];
             assign a_axi_awready[i] = y_axi_awready[($bits(a_axi_awready[0])*i)+:($bits(a_axi_awready[0]))];
             assign y_axi_wdata[($bits(a_axi_wdata[0])*i)+:($bits(a_axi_wdata[0]))] = a_axi_wdata[i];
             assign y_axi_wstrb[($bits(a_axi_wstrb[0])*i)+:($bits(a_axi_wstrb[0]))] = a_axi_wstrb[i];
             assign y_axi_wlast[($bits(a_axi_wlast[0])*i)+:($bits(a_axi_wlast[0]))] = a_axi_wlast[i];
+            assign y_axi_wuser[($bits(a_axi_wuser[0])*i)+:($bits(a_axi_wuser[0]))] = a_axi_wuser[i];
             assign y_axi_wvalid[($bits(a_axi_wvalid[0])*i)+:($bits(a_axi_wvalid[0]))] = a_axi_wvalid[i];
             assign a_axi_wready[i] = y_axi_wready[($bits(a_axi_wready[0])*i)+:($bits(a_axi_wready[0]))];
             assign a_axi_bid[i] = y_axi_bid[($bits(a_axi_bid[0])*i)+:($bits(a_axi_bid[0]))];
             assign a_axi_bresp[i] = y_axi_bresp[($bits(a_axi_bresp[0])*i)+:($bits(a_axi_bresp[0]))];
+            assign a_axi_buser[i] = y_axi_buser[($bits(a_axi_buser[0])*i)+:($bits(a_axi_buser[0]))];
             assign a_axi_bvalid[i] = y_axi_bvalid[($bits(a_axi_bvalid[0])*i)+:($bits(a_axi_bvalid[0]))];
             assign y_axi_bready[($bits(a_axi_bready[0])*i)+:($bits(a_axi_bready[0]))] = a_axi_bready[i];
             assign y_axi_arid[($bits(a_axi_arid[0])*i)+:($bits(a_axi_arid[0]))] = a_axi_arid[i];
@@ -182,6 +195,7 @@ module axi_memory #(
             assign y_axi_arcache[($bits(a_axi_arcache[0])*i)+:($bits(a_axi_arcache[0]))] = a_axi_arcache[i];
             assign y_axi_arprot[($bits(a_axi_arprot[0])*i)+:($bits(a_axi_arprot[0]))] = a_axi_arprot[i];
             assign y_axi_arregion[($bits(a_axi_arregion[0])*i)+:($bits(a_axi_arregion[0]))] = a_axi_arregion[i];
+            assign y_axi_aruser[($bits(a_axi_aruser[0])*i)+:($bits(a_axi_aruser[0]))] = a_axi_aruser[i];
             assign y_axi_arqos[($bits(a_axi_arqos[0])*i)+:($bits(a_axi_arqos[0]))] = a_axi_arqos[i];
             assign y_axi_arvalid[($bits(a_axi_arvalid[0])*i)+:($bits(a_axi_arvalid[0]))] = a_axi_arvalid[i];
             assign a_axi_arready[i] = y_axi_arready[($bits(a_axi_arready[0])*i)+:($bits(a_axi_arready[0]))];
@@ -189,6 +203,7 @@ module axi_memory #(
             assign a_axi_rdata[i] = y_axi_rdata[($bits(a_axi_rdata[0])*i)+:($bits(a_axi_rdata[0]))];
             assign a_axi_rresp[i] = y_axi_rresp[($bits(a_axi_rresp[0])*i)+:($bits(a_axi_rresp[0]))];
             assign a_axi_rlast[i] = y_axi_rlast[($bits(a_axi_rlast[0])*i)+:($bits(a_axi_rlast[0]))];
+            assign a_axi_ruser[i] = y_axi_ruser[($bits(a_axi_ruser[0])*i)+:($bits(a_axi_ruser[0]))];
             assign a_axi_rvalid[i] = y_axi_rvalid[($bits(a_axi_rvalid[0])*i)+:($bits(a_axi_rvalid[0]))];
             assign y_axi_rready[($bits(a_axi_rready[0])*i)+:($bits(a_axi_rready[0]))] = a_axi_rready[i];
         end
@@ -203,16 +218,19 @@ module axi_memory #(
     logic [                                        3:0] b_axi_awcache  [G_MASTER_AXI-1:0];
     logic [                                        2:0] b_axi_awprot   [G_MASTER_AXI-1:0];
     logic [                                        3:0] b_axi_awregion [G_MASTER_AXI-1:0];
+    logic [                         G_AWUSER_WIDTH-1:0] b_axi_awuser   [G_MASTER_AXI-1:0];
     logic [                                        3:0] b_axi_awqos    [G_MASTER_AXI-1:0];
     logic                                               b_axi_awvalid  [G_MASTER_AXI-1:0];
     logic                                               b_axi_awready  [G_MASTER_AXI-1:0];
     logic [                                       31:0] b_axi_wdata    [G_MASTER_AXI-1:0];
     logic [                                        3:0] b_axi_wstrb    [G_MASTER_AXI-1:0];
     logic                                               b_axi_wlast    [G_MASTER_AXI-1:0];
+    logic [                          G_WUSER_WIDTH-1:0] b_axi_wuser    [G_MASTER_AXI-1:0];
     logic                                               b_axi_wvalid   [G_MASTER_AXI-1:0];
     logic                                               b_axi_wready   [G_MASTER_AXI-1:0];
     logic [                           G_M_ID_WIDTH-1:0] b_axi_bid      [G_MASTER_AXI-1:0];
     logic [                                        1:0] b_axi_bresp    [G_MASTER_AXI-1:0];
+    logic [                          G_BUSER_WIDTH-1:0] b_axi_buser    [G_MASTER_AXI-1:0];
     logic                                               b_axi_bvalid   [G_MASTER_AXI-1:0];
     logic                                               b_axi_bready   [G_MASTER_AXI-1:0];
     logic [                           G_M_ID_WIDTH-1:0] b_axi_arid     [G_MASTER_AXI-1:0];
@@ -224,6 +242,7 @@ module axi_memory #(
     logic [                                        3:0] b_axi_arcache  [G_MASTER_AXI-1:0];
     logic [                                        2:0] b_axi_arprot   [G_MASTER_AXI-1:0];
     logic [                                        3:0] b_axi_arregion [G_MASTER_AXI-1:0];
+    logic [                         G_ARUSER_WIDTH-1:0] b_axi_aruser   [G_MASTER_AXI-1:0];
     logic [                                        3:0] b_axi_arqos    [G_MASTER_AXI-1:0];
     logic                                               b_axi_arvalid  [G_MASTER_AXI-1:0];
     logic                                               b_axi_arready  [G_MASTER_AXI-1:0];
@@ -231,6 +250,7 @@ module axi_memory #(
     logic [                                       31:0] b_axi_rdata    [G_MASTER_AXI-1:0];
     logic [                                        1:0] b_axi_rresp    [G_MASTER_AXI-1:0];
     logic                                               b_axi_rlast    [G_MASTER_AXI-1:0];
+    logic [                          G_RUSER_WIDTH-1:0] b_axi_ruser    [G_MASTER_AXI-1:0];
     logic                                               b_axi_rvalid   [G_MASTER_AXI-1:0];
     logic                                               b_axi_rready   [G_MASTER_AXI-1:0];
 
@@ -243,16 +263,19 @@ module axi_memory #(
     logic [ ($bits(b_axi_awcache[0])*G_MASTER_AXI)-1:0] x_axi_awcache;
     logic [  ($bits(b_axi_awprot[0])*G_MASTER_AXI)-1:0] x_axi_awprot;
     logic [($bits(b_axi_awregion[0])*G_MASTER_AXI)-1:0] x_axi_awregion;
+    logic [  ($bits(b_axi_awuser[0])*G_MASTER_AXI)-1:0] x_axi_awuser;
     logic [   ($bits(b_axi_awqos[0])*G_MASTER_AXI)-1:0] x_axi_awqos;
     logic [ ($bits(b_axi_awvalid[0])*G_MASTER_AXI)-1:0] x_axi_awvalid;
     logic [ ($bits(b_axi_awready[0])*G_MASTER_AXI)-1:0] x_axi_awready;
     logic [   ($bits(b_axi_wdata[0])*G_MASTER_AXI)-1:0] x_axi_wdata;
     logic [   ($bits(b_axi_wstrb[0])*G_MASTER_AXI)-1:0] x_axi_wstrb;
     logic [   ($bits(b_axi_wlast[0])*G_MASTER_AXI)-1:0] x_axi_wlast;
+    logic [   ($bits(b_axi_wuser[0])*G_MASTER_AXI)-1:0] x_axi_wuser;
     logic [  ($bits(b_axi_wvalid[0])*G_MASTER_AXI)-1:0] x_axi_wvalid;
     logic [  ($bits(b_axi_wready[0])*G_MASTER_AXI)-1:0] x_axi_wready;
     logic [     ($bits(b_axi_bid[0])*G_MASTER_AXI)-1:0] x_axi_bid;
     logic [   ($bits(b_axi_bresp[0])*G_MASTER_AXI)-1:0] x_axi_bresp;
+    logic [   ($bits(b_axi_buser[0])*G_MASTER_AXI)-1:0] x_axi_buser;
     logic [  ($bits(b_axi_bvalid[0])*G_MASTER_AXI)-1:0] x_axi_bvalid;
     logic [  ($bits(b_axi_bready[0])*G_MASTER_AXI)-1:0] x_axi_bready;
     logic [    ($bits(b_axi_arid[0])*G_MASTER_AXI)-1:0] x_axi_arid;
@@ -264,6 +287,7 @@ module axi_memory #(
     logic [ ($bits(b_axi_arcache[0])*G_MASTER_AXI)-1:0] x_axi_arcache;
     logic [  ($bits(b_axi_arprot[0])*G_MASTER_AXI)-1:0] x_axi_arprot;
     logic [($bits(b_axi_arregion[0])*G_MASTER_AXI)-1:0] x_axi_arregion;
+    logic [  ($bits(b_axi_aruser[0])*G_MASTER_AXI)-1:0] x_axi_aruser;
     logic [   ($bits(b_axi_arqos[0])*G_MASTER_AXI)-1:0] x_axi_arqos;
     logic [ ($bits(b_axi_arvalid[0])*G_MASTER_AXI)-1:0] x_axi_arvalid;
     logic [ ($bits(b_axi_arready[0])*G_MASTER_AXI)-1:0] x_axi_arready;
@@ -271,6 +295,7 @@ module axi_memory #(
     logic [   ($bits(b_axi_rdata[0])*G_MASTER_AXI)-1:0] x_axi_rdata;
     logic [   ($bits(b_axi_rresp[0])*G_MASTER_AXI)-1:0] x_axi_rresp;
     logic [   ($bits(b_axi_rlast[0])*G_MASTER_AXI)-1:0] x_axi_rlast;
+    logic [   ($bits(b_axi_ruser[0])*G_MASTER_AXI)-1:0] x_axi_ruser;
     logic [  ($bits(b_axi_rvalid[0])*G_MASTER_AXI)-1:0] x_axi_rvalid;
     logic [  ($bits(b_axi_rready[0])*G_MASTER_AXI)-1:0] x_axi_rready;
 
@@ -286,16 +311,19 @@ module axi_memory #(
             assign b_axi_awcache[i] = x_axi_awcache[($bits(b_axi_awcache[0])*i)+:($bits(b_axi_awcache[0]))];
             assign b_axi_awprot[i] = x_axi_awprot[($bits(b_axi_awprot[0])*i)+:($bits(b_axi_awprot[0]))];
             assign b_axi_awregion[i] = x_axi_awregion[($bits(b_axi_awregion[0])*i)+:($bits(b_axi_awregion[0]))];
+            assign b_axi_awuser[i] = x_axi_awuser[($bits(b_axi_awuser[0])*i)+:($bits(b_axi_awuser[0]))];
             assign b_axi_awqos[i] = x_axi_awqos[($bits(b_axi_awqos[0])*i)+:($bits(b_axi_awqos[0]))];
             assign b_axi_awvalid[i] = x_axi_awvalid[($bits(b_axi_awvalid[0])*i)+:($bits(b_axi_awvalid[0]))];
             assign x_axi_awready[($bits(b_axi_awready[0])*i)+:($bits(b_axi_awready[0]))] = b_axi_awready[i];
             assign b_axi_wdata[i] = x_axi_wdata[($bits(b_axi_wdata[0])*i)+:($bits(b_axi_wdata[0]))];
             assign b_axi_wstrb[i] = x_axi_wstrb[($bits(b_axi_wstrb[0])*i)+:($bits(b_axi_wstrb[0]))];
             assign b_axi_wlast[i] = x_axi_wlast[($bits(b_axi_wlast[0])*i)+:($bits(b_axi_wlast[0]))];
+            assign b_axi_wuser[i] = x_axi_wuser[($bits(b_axi_wuser[0])*i)+:($bits(b_axi_wuser[0]))];
             assign b_axi_wvalid[i] = x_axi_wvalid[($bits(b_axi_wvalid[0])*i)+:($bits(b_axi_wvalid[0]))];
             assign x_axi_wready[($bits(b_axi_wready[0])*i)+:($bits(b_axi_wready[0]))] = b_axi_wready[i];
             assign x_axi_bid[($bits(b_axi_bid[0])*i)+:($bits(b_axi_bid[0]))] = b_axi_bid[i];
             assign x_axi_bresp[($bits(b_axi_bresp[0])*i)+:($bits(b_axi_bresp[0]))] = b_axi_bresp[i];
+            assign x_axi_buser[($bits(b_axi_buser[0])*i)+:($bits(b_axi_buser[0]))] = b_axi_buser[i];
             assign x_axi_bvalid[($bits(b_axi_bvalid[0])*i)+:($bits(b_axi_bvalid[0]))] = b_axi_bvalid[i];
             assign b_axi_bready[i] = x_axi_bready[($bits(b_axi_bready[0])*i)+:($bits(b_axi_bready[0]))];
             assign b_axi_arid[i] = x_axi_arid[($bits(b_axi_arid[0])*i)+:($bits(b_axi_arid[0]))];
@@ -307,6 +335,7 @@ module axi_memory #(
             assign b_axi_arcache[i] = x_axi_arcache[($bits(b_axi_arcache[0])*i)+:($bits(b_axi_arcache[0]))];
             assign b_axi_arprot[i] = x_axi_arprot[($bits(b_axi_arprot[0])*i)+:($bits(b_axi_arprot[0]))];
             assign b_axi_arregion[i] = x_axi_arregion[($bits(b_axi_arregion[0])*i)+:($bits(b_axi_arregion[0]))];
+            assign b_axi_aruser[i] = x_axi_aruser[($bits(b_axi_aruser[0])*i)+:($bits(b_axi_aruser[0]))];
             assign b_axi_arqos[i] = x_axi_arqos[($bits(b_axi_arqos[0])*i)+:($bits(b_axi_arqos[0]))];
             assign b_axi_arvalid[i] = x_axi_arvalid[($bits(b_axi_arvalid[0])*i)+:($bits(b_axi_arvalid[0]))];
             assign x_axi_arready[($bits(b_axi_arready[0])*i)+:($bits(b_axi_arready[0]))] = b_axi_arready[i];
@@ -314,6 +343,7 @@ module axi_memory #(
             assign x_axi_rdata[($bits(b_axi_rdata[0])*i)+:($bits(b_axi_rdata[0]))] = b_axi_rdata[i];
             assign x_axi_rresp[($bits(b_axi_rresp[0])*i)+:($bits(b_axi_rresp[0]))] = b_axi_rresp[i];
             assign x_axi_rlast[($bits(b_axi_rlast[0])*i)+:($bits(b_axi_rlast[0]))] = b_axi_rlast[i];
+            assign x_axi_ruser[($bits(b_axi_ruser[0])*i)+:($bits(b_axi_ruser[0]))] = b_axi_ruser[i];
             assign x_axi_rvalid[($bits(b_axi_rvalid[0])*i)+:($bits(b_axi_rvalid[0]))] = b_axi_rvalid[i];
             assign b_axi_rready[i] = x_axi_rready[($bits(b_axi_rready[0])*i)+:($bits(b_axi_rready[0]))];
         end
@@ -327,17 +357,20 @@ module axi_memory #(
     assign a_axi_awlock[0]   = s_axi_awlock;
     assign a_axi_awcache[0]  = s_axi_awcache;
     assign a_axi_awprot[0]   = s_axi_awprot;
-    assign a_axi_awregion[0] = 0;
+    assign a_axi_awregion[0] = s_axi_awregion;
+    assign a_axi_awuser[0]   = s_axi_awuser;
     assign a_axi_awqos[0]    = s_axi_awqos;
     assign a_axi_awvalid[0]  = s_axi_awvalid;
     assign s_axi_awready     = a_axi_awready[0];
     assign a_axi_wdata[0]    = s_axi_wdata;
     assign a_axi_wstrb[0]    = s_axi_wstrb;
     assign a_axi_wlast[0]    = s_axi_wlast;
+    assign a_axi_wuser[0]    = s_axi_wuser;
     assign a_axi_wvalid[0]   = s_axi_wvalid;
     assign s_axi_wready      = a_axi_wready[0];
     assign s_axi_bid         = a_axi_bid[0];
     assign s_axi_bresp       = a_axi_bresp[0];
+    assign s_axi_buser       = a_axi_buser[0];
     assign s_axi_bvalid      = a_axi_bvalid[0];
     assign a_axi_bready[0]   = s_axi_bready;
     assign a_axi_arid[0]     = s_axi_arid;
@@ -348,7 +381,8 @@ module axi_memory #(
     assign a_axi_arlock[0]   = s_axi_arlock;
     assign a_axi_arcache[0]  = s_axi_arcache;
     assign a_axi_arprot[0]   = s_axi_arprot;
-    assign a_axi_arregion[0] = 0;
+    assign a_axi_arregion[0] = s_axi_arregion;
+    assign a_axi_aruser[0]   = s_axi_aruser;
     assign a_axi_arqos[0]    = s_axi_arqos;
     assign a_axi_arvalid[0]  = s_axi_arvalid;
     assign s_axi_arready     = a_axi_arready[0];
@@ -356,6 +390,7 @@ module axi_memory #(
     assign s_axi_rdata       = a_axi_rdata[0];
     assign s_axi_rresp       = a_axi_rresp[0];
     assign s_axi_rlast       = a_axi_rlast[0];
+    assign s_axi_ruser       = a_axi_ruser[0];
     assign s_axi_rvalid      = a_axi_rvalid[0];
     assign a_axi_rready[0]   = s_axi_rready;
 
@@ -405,7 +440,7 @@ module axi_memory #(
         , .G_M_ADDR_WIDTH(w_address_width[0+:32*G_MASTER_AXI])
     ) i_axi_interconnect (
           .aclk          (s_aclk)
-        , .aresetn       (w_aresetn)
+        , .aresetn       (s_aresetn)
         , .s_axi_awid    (y_axi_awid)
         , .s_axi_awaddr  (y_axi_awaddr)
         , .s_axi_awlen   (y_axi_awlen)
@@ -415,19 +450,19 @@ module axi_memory #(
         , .s_axi_awcache (y_axi_awcache)
         , .s_axi_awprot  (y_axi_awprot)
         , .s_axi_awregion(y_axi_awregion)
+        , .s_axi_awuser  (y_axi_awuser)
         , .s_axi_awqos   (y_axi_awqos)
-        , .s_axi_awuser  ({G_SLAVE_AXI{1'b0}})
         , .s_axi_awvalid (y_axi_awvalid)
         , .s_axi_awready (y_axi_awready)
         , .s_axi_wdata   (y_axi_wdata)
         , .s_axi_wstrb   (y_axi_wstrb)
         , .s_axi_wlast   (y_axi_wlast)
-        , .s_axi_wuser   ({G_SLAVE_AXI{1'b0}})
+        , .s_axi_wuser   (y_axi_wuser)
         , .s_axi_wvalid  (y_axi_wvalid)
         , .s_axi_wready  (y_axi_wready)
         , .s_axi_bid     (y_axi_bid)
         , .s_axi_bresp   (y_axi_bresp)
-        , .s_axi_buser   ()
+        , .s_axi_buser   (y_axi_buser)
         , .s_axi_bvalid  (y_axi_bvalid)
         , .s_axi_bready  (y_axi_bready)
         , .s_axi_arid    (y_axi_arid)
@@ -440,14 +475,14 @@ module axi_memory #(
         , .s_axi_arprot  (y_axi_arprot)
         , .s_axi_arregion(y_axi_arregion)
         , .s_axi_arqos   (y_axi_arqos)
-        , .s_axi_aruser  ({G_SLAVE_AXI{1'b0}})
+        , .s_axi_aruser  (y_axi_aruser)
         , .s_axi_arvalid (y_axi_arvalid)
         , .s_axi_arready (y_axi_arready)
         , .s_axi_rid     (y_axi_rid)
         , .s_axi_rdata   (y_axi_rdata)
         , .s_axi_rresp   (y_axi_rresp)
         , .s_axi_rlast   (y_axi_rlast)
-        , .s_axi_ruser   ()
+        , .s_axi_ruser   (y_axi_ruser)
         , .s_axi_rvalid  (y_axi_rvalid)
         , .s_axi_rready  (y_axi_rready)
         , .m_axi_awid    (x_axi_awid)
@@ -459,19 +494,19 @@ module axi_memory #(
         , .m_axi_awcache (x_axi_awcache)
         , .m_axi_awprot  (x_axi_awprot)
         , .m_axi_awregion(x_axi_awregion)
+        , .m_axi_awuser  (x_axi_awuser)
         , .m_axi_awqos   (x_axi_awqos)
-        , .m_axi_awuser  ()
         , .m_axi_awvalid (x_axi_awvalid)
         , .m_axi_awready (x_axi_awready)
         , .m_axi_wdata   (x_axi_wdata)
         , .m_axi_wstrb   (x_axi_wstrb)
         , .m_axi_wlast   (x_axi_wlast)
-        , .m_axi_wuser   ()
+        , .m_axi_wuser   (x_axi_wuser)
         , .m_axi_wvalid  (x_axi_wvalid)
         , .m_axi_wready  (x_axi_wready)
         , .m_axi_bid     (x_axi_bid)
         , .m_axi_bresp   (x_axi_bresp)
-        , .m_axi_buser   ({G_MASTER_AXI{1'b0}})
+        , .m_axi_buser   (x_axi_buser)
         , .m_axi_bvalid  (x_axi_bvalid)
         , .m_axi_bready  (x_axi_bready)
         , .m_axi_arid    (x_axi_arid)
@@ -483,15 +518,15 @@ module axi_memory #(
         , .m_axi_arcache (x_axi_arcache)
         , .m_axi_arprot  (x_axi_arprot)
         , .m_axi_arregion(x_axi_arregion)
+        , .m_axi_aruser  (x_axi_aruser)
         , .m_axi_arqos   (x_axi_arqos)
-        , .m_axi_aruser  ()
         , .m_axi_arvalid (x_axi_arvalid)
         , .m_axi_arready (x_axi_arready)
         , .m_axi_rid     (x_axi_rid)
         , .m_axi_rdata   (x_axi_rdata)
         , .m_axi_rresp   (x_axi_rresp)
         , .m_axi_rlast   (x_axi_rlast)
-        , .m_axi_ruser   ({G_MASTER_AXI{1'b0}})
+        , .m_axi_ruser   (x_axi_ruser)
         , .m_axi_rvalid  (x_axi_rvalid)
         , .m_axi_rready  (x_axi_rready)
     );
@@ -540,21 +575,18 @@ module axi_memory #(
         , .s_axi_awprot  (b_axi_awprot[0])
         , .s_axi_awqos   (b_axi_awqos[0])
         , .s_axi_awregion(b_axi_awregion[0])
-        //, .s_axi_awuser       (b_axi_awuser  [0])
-        , .s_axi_awuser  (1'b0)
+        , .s_axi_awuser  (b_axi_awuser[0])
         , .s_axi_awvalid (b_axi_awvalid[0])
         , .s_axi_awready (b_axi_awready[0])
         , .s_axi_wdata   (b_axi_wdata[0])
         , .s_axi_wstrb   (b_axi_wstrb[0])
         , .s_axi_wlast   (b_axi_wlast[0])
-        //, .s_axi_wuser        (b_axi_wuser   [0])
-        , .s_axi_wuser   (1'b0)
+        , .s_axi_wuser   (b_axi_wuser[0])
         , .s_axi_wvalid  (b_axi_wvalid[0])
         , .s_axi_wready  (b_axi_wready[0])
         , .s_axi_bid     (b_axi_bid[0])
         , .s_axi_bresp   (b_axi_bresp[0])
-        //, .s_axi_buser        (b_axi_buser   [0])
-        , .s_axi_buser   ()
+        , .s_axi_buser   (b_axi_buser[0])
         , .s_axi_bvalid  (b_axi_bvalid[0])
         , .s_axi_bready  (b_axi_bready[0])
         , .s_axi_arid    (b_axi_arid[0])
@@ -567,16 +599,14 @@ module axi_memory #(
         , .s_axi_arprot  (b_axi_arprot[0])
         , .s_axi_arqos   (b_axi_arqos[0])
         , .s_axi_arregion(b_axi_arregion[0])
-        //, .s_axi_aruser       (b_axi_aruser  [0])
-        , .s_axi_aruser  (1'b0)
+        , .s_axi_aruser  (b_axi_aruser[0])
         , .s_axi_arvalid (b_axi_arvalid[0])
         , .s_axi_arready (b_axi_arready[0])
         , .s_axi_rid     (b_axi_rid[0])
         , .s_axi_rdata   (b_axi_rdata[0])
         , .s_axi_rresp   (b_axi_rresp[0])
         , .s_axi_rlast   (b_axi_rlast[0])
-        //, .s_axi_ruser        (b_axi_ruser   [0])
-        , .s_axi_ruser   ()
+        , .s_axi_ruser   (b_axi_ruser[0])
         , .s_axi_rvalid  (b_axi_rvalid[0])
         , .s_axi_rready  (b_axi_rready[0])
     );

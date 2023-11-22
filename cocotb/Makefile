@@ -43,4 +43,7 @@ VERILOG_SOURCES = \
     ${VERILOG_DESIGN} \
     ${COCOTB_SOURCES}
 
+GENERICS = \
+	G_HEXFILE=./firmware.hex \
+
 include ${WORK_BASE}/rtlflo/cocotb_helper.mak
