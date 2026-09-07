@@ -1,5 +1,13 @@
 [![.github/workflows/ci.yml](https://github.com/YosysHQ/picorv32/actions/workflows/ci.yml/badge.svg)](https://github.com/YosysHQ/picorv32/actions/workflows/ci.yml)
 
+Development status
+==================
+
+This project is no longer under active development.  Formal verification of the
+core is possible with the [RISC-V Formal Verification
+Framework](https://github.com/YosysHQ/riscv-formal/). Please direct any
+questions to the [official YosysHQ Discourse](https://yosyshq.discourse.group).
+
 PicoRV32 - A Size-Optimized RISC-V CPU
 ======================================
 
